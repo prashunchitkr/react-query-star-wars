@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import Person from "./Person";
 import { IResponse } from "./Planets";
@@ -22,27 +22,50 @@ export interface IPerson {
   url: string;
 }
 
-const People = () => {
-  const fetchPeople = async () => {
-    const res: IResponse<IPerson> = await fetch("https://swapi.dev/api/people/")
-      .then((res) => res.json())
-      .catch((err) => console.log(err));
-    return res;
-  };
+const fetchPeople = async (page: number = 1) => {
+  const res: IResponse<IPerson> = await fetch(
+    `https://swapi.dev/api/people/?page=${page}`
+  )
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+  return res;
+};
 
-  const { data, status } = useQuery<IResponse<IPerson>>("people", fetchPeople);
+const People = () => {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError, isSuccess, isPreviousData } = useQuery<
+    IResponse<IPerson>
+  >(["people", page], () => fetchPeople(page), {
+    enabled: page >= 1,
+    keepPreviousData: true,
+  });
 
   return (
     <>
       <h2>People</h2>
-      {status === "error" && <div>Error Fetching Data</div>}
-      {status === "loading" && <div>Loading Data...</div>}
-      {status === "success" && (
-        <div>
-          {data?.results.map((person) => (
-            <Person key={person.name} person={person} />
-          ))}
-        </div>
+      {isError && <div>Error Fetching Data</div>}
+      {isLoading && <div>Loading Data...</div>}
+      {isSuccess && (
+        <>
+          <button onClick={() => setPage((p) => Math.max(p - 1, 1))}>
+            Previous
+          </button>
+          {page}
+          <button
+            onClick={() => {
+              if (!isPreviousData && data?.next) {
+                setPage((p) => p + 1);
+              }
+            }}
+          >
+            Next
+          </button>
+          <div>
+            {data?.results.map((person) => (
+              <Person key={person.name} person={person} />
+            ))}
+          </div>
+        </>
       )}
     </>
   );

@@ -10,24 +10,6 @@ body {
     width: 80%;
     margin: 0 auto;
 
-    nav {
-      button {
-        margin: 0 10px;
-        background: transparent;
-        border: 3px solid #ccc;
-        border-radius: 20px;
-        padding: 10px;
-        color: #ccc;
-        font-size: 1.2em;
-        cursor: pointer;
-
-        &:hover {
-          color: #fff;
-          border-color: #fff;
-        }
-      }
-    }
-
     .content {
       text-align: left;
 
@@ -57,4 +39,20 @@ h1 {
   color: #ffff57;
   font-size: 4em;
   letter-spacing: 2px;
+}
+
+button {
+  margin: 0 10px;
+  background: transparent;
+  border: 3px solid #ccc;
+  border-radius: 20px;
+  padding: 10px;
+  color: #ccc;
+  font-size: 1.2em;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    border-color: #fff;
+  }
 }
